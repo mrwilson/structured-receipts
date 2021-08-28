@@ -24,7 +24,7 @@ const StructuredReceipts = new function() {
                     var fields = line.split(/[ ,]+/)
 
                     var product = fields
-                        .slice(0, fields.length-2)
+                        .slice(0, fields.length-1)
                         .join(" ")
                         .replace("*","");
 
