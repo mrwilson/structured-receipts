@@ -1,0 +1,70 @@
+body {
+    display: grid;
+    width: auto;
+    height: 100vh;
+    font-family: Arial;
+}
+
+@media only screen and (min-width: 1025px) {
+    body {
+        grid-template-columns: 1fr 2fr 1fr;
+    }
+
+    header, #receipt-container, footer {
+        grid-column: 2;
+    }
+}
+
+.index {
+    grid-template-rows: 1fr 3fr 1fr;
+}
+
+.map {
+    grid-template-rows: 1fr 3fr 1fr;
+}
+
+.box {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+
+header {
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+header h1 {
+    font-size: 25pt
+}
+
+header span {
+    font-size: 12pt;
+}
+
+header a {
+    color: black;
+}
+
+header h1 i {
+    font-size: 3rem;
+}
+
+header i {
+    font-size: 2rem;
+}
+
+#file_upload:hover {
+    cursor: pointer;
+}
+
+textarea {
+    resize: none;
+}
+
+footer {
+    grid-template-columns: 1fr 1.5fr 1fr;
+}
+
+footer a {
+    color: black;
+}
