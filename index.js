@@ -55,7 +55,7 @@ const StructuredReceipts = new function() {
     }
 
     let thresholdImageToBlackAndWhite = function thresholdImageToBlackAndWhite(pixels) {
-        var threshold = Math.floor(0.4 * 255);
+        var threshold = Math.floor(0.6 * 255);
 
         for (let i = 0; i < pixels.length; i += 4) {
             const red = pixels[i];
