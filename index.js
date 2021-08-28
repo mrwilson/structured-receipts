@@ -9,6 +9,35 @@ const StructuredReceipts = new function() {
         }
     }
 
+    this.mungeReceipt = function mungeReceipt(content) {
+        if (content.includes("Sainsbury's")) {
+            var receiptLines = content.split("\n");
+
+            var balanceLine = receiptLines.findIndex(
+                line => line.match(/\d+ BALANCE/)
+            );
+
+            return receiptLines
+                .slice(0, balanceLine)
+                .filter(line => line.includes("£"))
+                .map(line => {
+                    var fields = line.split(/[ ,]+/)
+
+                    var product = fields
+                        .slice(0, fields.length-2)
+                        .join(" ")
+                        .replace("*","");
+
+                    var price = fields.slice(-1)[0].replace("£","");
+
+                    return product + "," + price
+                })
+                .join("\n")
+        }
+
+        return content
+    }
+
     this.parseReceipt = function parseReceipt(files) {
         var file = files[0];
 
@@ -18,7 +47,7 @@ const StructuredReceipts = new function() {
             .then(({ data: { text } }) => {
                 processing.style.visibility = 'hidden';
 
-                receipt.value = text;
+                receipt.value = StructuredReceipts.mungeReceipt(text);
                 receipt.style.height = receipt.scrollHeight+"px"
                 receipt.style.visibility = 'visible';
             });
