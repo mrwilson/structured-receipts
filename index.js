@@ -54,21 +54,61 @@ const StructuredReceipts = new function() {
         document.body.removeChild(link);
     }
 
+    let thresholdImageToBlackAndWhite = function thresholdImageToBlackAndWhite(pixels) {
+        var threshold = Math.floor(0.4 * 255);
+
+        for (let i = 0; i < pixels.length; i += 4) {
+            const red = pixels[i];
+            const green = pixels[i+1];
+            const blue = pixels[i+2];
+
+            if ([red, green, blue].some(colour => colour > threshold)) {
+                pixels[i] = pixels[i+1] = pixels[i+2] = 255;
+            } else {
+                pixels[i] = pixels[i+1] = pixels[i+2] = 0;
+            }
+        }
+    }
+
     this.parseReceipt = function parseReceipt(files) {
         var file = files[0];
+        var ctx = hidden_canvas.getContext('2d');
 
-        processing.style.visibility = 'visible';
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
 
-        Tesseract.recognize(file, 'eng', { logger: this.logReceiptProcessing})
-            .then(({ data: { text } }) => {
-                processing.style.visibility = 'hidden';
+        reader.onload = function() {
+            var image = new Image();
+            image.onload = function() {
+                // Draw the uploaded image on the Canvas
+                hidden_canvas.width = image.width;
+                hidden_canvas.height = image.height;
+                ctx.drawImage(image, 0, 0);
 
-                receipt.value = StructuredReceipts.mungeReceipt(text);
-                receipt.style.height = receipt.scrollHeight+"px"
-                receipt.style.visibility = 'visible';
+                // Threshold the image into black and white
+                var imageData = ctx.getImageData(0,0, hidden_canvas.width, hidden_canvas.height);
+                thresholdImageToBlackAndWhite(imageData.data);
+                ctx.putImageData(imageData, 0, 0);
 
-                download_csv.style.visibility = 'visible';
-            });
+                processing.style.visibility = 'visible';
+
+                Tesseract.recognize(
+                        hidden_canvas,
+                        'eng',
+                        { logger: m => StructuredReceipts.logReceiptProcessing(m)}
+                    )
+                    .then(({ data: { confidence, text } }) => {
+                        processing.style.visibility = 'hidden';
+
+                        receipt.value = StructuredReceipts.mungeReceipt(text);
+                        receipt.style.height = receipt.scrollHeight+"px"
+                        receipt.style.visibility = 'visible';
+
+                        download_csv.style.visibility = 'visible';
+                    });
+            }
+            image.src = reader.result;
+        }
     };
 
 };
