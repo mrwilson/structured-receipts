@@ -38,6 +38,22 @@ const StructuredReceipts = new function() {
         return content
     }
 
+    this.downloadAsCsv = function downloadAsCsv() {
+        let csvContent = "data:text/csv;charset=utf-8,product,price\r\n"
+            + receipt.value.split("\n").join("\r\n");
+
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "receipts.csv");
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+    }
+
     this.parseReceipt = function parseReceipt(files) {
         var file = files[0];
 
@@ -50,6 +66,8 @@ const StructuredReceipts = new function() {
                 receipt.value = StructuredReceipts.mungeReceipt(text);
                 receipt.style.height = receipt.scrollHeight+"px"
                 receipt.style.visibility = 'visible';
+
+                download_csv.style.visibility = 'visible';
             });
     };
 
