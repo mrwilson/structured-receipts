@@ -20,7 +20,7 @@ const StructuredReceipts = new function() {
             return receiptLines
                 .slice(0, balanceLine)
                 .filter(line => line.includes("£"))
-                .map(line => {
+                .forEach(line => {
                     var fields = line.split(/[ ,]+/)
 
                     var product = fields
@@ -30,9 +30,11 @@ const StructuredReceipts = new function() {
 
                     var price = fields.slice(-1)[0].replace("£","");
 
-                    return product + "," + price
-                })
-                .join("\n")
+                    var newRow = receipt.insertRow();
+                    newRow.insertCell().textContent = 1;
+                    newRow.insertCell().textContent = product;
+                    newRow.insertCell().textContent = price;
+                });
         }
 
         return content
@@ -100,8 +102,7 @@ const StructuredReceipts = new function() {
                     .then(({ data: { confidence, text } }) => {
                         processing.style.visibility = 'hidden';
 
-                        receipt.value = StructuredReceipts.mungeReceipt(text);
-                        receipt.style.height = receipt.scrollHeight+"px"
+                        StructuredReceipts.mungeReceipt(text);
                         receipt.style.visibility = 'visible';
 
                         download_csv.style.visibility = 'visible';
