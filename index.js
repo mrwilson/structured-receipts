@@ -4,6 +4,13 @@ const StructuredReceipts = new function() {
         return retailers.selectedOptions[0].value;
     }
 
+    function toTitleCase(input) {
+        return input
+            .split(/\s+/)
+            .map(word => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())
+            .join(" ");
+    }
+
     function addRowToReceiptTable(quantity, product, price) {
         var newRow = receipt.insertRow();
         var quantityCell = newRow.insertCell()
@@ -16,7 +23,7 @@ const StructuredReceipts = new function() {
         })
 
         var productCell = newRow.insertCell()
-        productCell.textContent = product;
+        productCell.textContent = toTitleCase(product);
         productCell.setAttribute('contenteditable','true');
 
         var priceCell = newRow.insertCell()
