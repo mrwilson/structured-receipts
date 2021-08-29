@@ -25,7 +25,7 @@ const StructuredReceipts = new function() {
     }
 
     this.mungeReceipt = function mungeReceipt(content) {
-        if (content.includes("Sainsbury's")) {
+        if (content.includes("Sainsbury's") || retailers.selectedOptions[0].value == "sainsbury's") {
             var receiptLines = content.split("\n");
 
             var balanceLine = receiptLines.findIndex(
@@ -50,7 +50,7 @@ const StructuredReceipts = new function() {
 
                 receipt.style.visibility = 'visible';
                 download_csv.style.visibility = 'visible';
-        } else if (content.toLowerCase().includes("total to pay")) {
+        } else if (content.toLowerCase().includes("total to pay") || retailers.selectedOptions[0].value == "tesco") {
             var receiptLines = content.split("\n");
 
             var balanceLine = receiptLines.findIndex(
