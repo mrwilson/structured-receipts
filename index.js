@@ -55,10 +55,14 @@ const StructuredReceipts = new function() {
     }
 
     this.downloadAsCsv = function downloadAsCsv() {
-        let csvContent = "data:text/csv;charset=utf-8,product,price\r\n"
-            + receipt.value.split("\n").join("\r\n");
+        let dataUrlHeader = "data:text/csv;charset=utf-8,"
+        let csvContent = [...receipt.rows]
+            .map(
+                row => [...row.children].map(cell => cell.innerText).join(",")
+            )
+            .join("\r\n");
 
-        let encodedUri = encodeURI(csvContent);
+        let encodedUri = encodeURI(dataUrlHeader + csvContent);
         let link = document.createElement("a");
         link.setAttribute("href", encodedUri);
         link.setAttribute("download", "receipts.csv");
