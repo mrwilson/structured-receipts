@@ -1,5 +1,9 @@
 const StructuredReceipts = new function() {
 
+    function operatingMode() {
+        return retailers.selectedOptions[0].value;
+    }
+
     function addRowToReceiptTable(quantity, product, price) {
         var newRow = receipt.insertRow();
         var quantityCell = newRow.insertCell()
@@ -51,7 +55,7 @@ const StructuredReceipts = new function() {
     }
 
     this.mungeReceipt = function mungeReceipt(content) {
-        if (content.includes("Sainsbury's") || retailers.selectedOptions[0].value == "sainsbury's") {
+        if (content.includes("Sainsbury's") || operatingMode() == "sainsbury's") {
             getItemsOnlyFromReceipt(
                 content,
                 line => line.match(/\d+ BALANCE/),
@@ -63,7 +67,7 @@ const StructuredReceipts = new function() {
 
             receipt.style.visibility = 'visible';
             download_csv.style.visibility = 'visible';
-        } else if (content.toLowerCase().includes("total to pay") || retailers.selectedOptions[0].value == "tesco") {
+        } else if (content.toLowerCase().includes("total to pay") || operatingMode() == "tesco") {
             getItemsOnlyFromReceipt(
                 content,
                 line => line.match(/total to pay/i),
