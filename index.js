@@ -10,7 +10,7 @@ const StructuredReceipts = new function() {
         quantityCell.textContent = quantity;
         quantityCell.setAttribute('contenteditable','true');
         quantityCell.addEventListener('input', e => {
-            if (e.data == 0) {
+            if (e.target.innerText == 0) {
                 receipt.deleteRow(newRow.rowIndex);
             }
         })
