@@ -24,57 +24,53 @@ const StructuredReceipts = new function() {
         }
     }
 
+    function getItemsOnlyFromReceipt(content, endsReceipt, validLine) {
+        var receiptLines = content.split("\n");
+
+        var lastLine = receiptLines.findIndex(endsReceipt);
+
+        return receiptLines
+            .slice(0, lastLine)
+            .filter(validLine)
+            .map(line => {
+                var fields = line.split(/[ ,]+/)
+
+                var product = fields
+                    .slice(0, fields.length-1)
+                    .join(" ")
+                    .replace("*","");
+
+                var price = fields.slice(-1)[0].replace("£","");
+
+                return [1, product, price];
+            });
+    }
+
     this.mungeReceipt = function mungeReceipt(content) {
         if (content.includes("Sainsbury's") || retailers.selectedOptions[0].value == "sainsbury's") {
-            var receiptLines = content.split("\n");
-
-            var balanceLine = receiptLines.findIndex(
-                line => line.match(/\d+ BALANCE/)
+            getItemsOnlyFromReceipt(
+                content,
+                line => line.match(/\d+ BALANCE/),
+                line => line.includes("£")
+            )
+            .forEach(validLine =>
+                addRowToReceiptTable(validLine[0], validLine[1], validLine[2])
             );
 
-            receiptLines
-                .slice(0, balanceLine)
-                .filter(line => line.includes("£"))
-                .forEach(line => {
-                    var fields = line.split(/[ ,]+/)
-
-                    var product = fields
-                        .slice(0, fields.length-1)
-                        .join(" ")
-                        .replace("*","");
-
-                    var price = fields.slice(-1)[0].replace("£","");
-
-                    addRowToReceiptTable(1, product, price);
-                });
-
-                receipt.style.visibility = 'visible';
-                download_csv.style.visibility = 'visible';
+            receipt.style.visibility = 'visible';
+            download_csv.style.visibility = 'visible';
         } else if (content.toLowerCase().includes("total to pay") || retailers.selectedOptions[0].value == "tesco") {
-            var receiptLines = content.split("\n");
-
-            var balanceLine = receiptLines.findIndex(
-                line => line.match(/total to pay/i)
+            getItemsOnlyFromReceipt(
+                content,
+                line => line.match(/total to pay/i),
+                line => line.match(/.*\d+\.\d{2}/) != null
+            )
+            .forEach(validLine =>
+                addRowToReceiptTable(validLine[0], validLine[1], validLine[2])
             );
 
-            receiptLines
-                .slice(0, balanceLine)
-                .filter(line => line.match(/.*\d+\.\d{2}/) != null)
-                .forEach(line => {
-                    var fields = line.split(/[ ,]+/)
-
-                    var product = fields
-                        .slice(0, fields.length-1)
-                        .join(" ")
-                        .replace("*","");
-
-                    var price = fields.slice(-1)[0].replace("£","");
-
-                    addRowToReceiptTable(1, product, price);
-                });
-
-                receipt.style.visibility = 'visible';
-                download_csv.style.visibility = 'visible';
+            receipt.style.visibility = 'visible';
+            download_csv.style.visibility = 'visible';
         } else {
             failed_parse_receipt.value = content;
             failed_parse_receipt.style.height = failed_parse_receipt.scrollHeight+"px"
