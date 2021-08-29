@@ -28,7 +28,12 @@ const StructuredReceipts = new function() {
 
         if (m.status === 'recognizing text') {
             var processAsPercentage = Math.floor(m.progress*100);
-            processing.textContent = `Processing receipt... (${processAsPercentage}%)`
+
+            if (operatingMode() == "auto") {
+                processing.textContent = `Processing receipt... (${processAsPercentage}%)`
+            } else {
+                processing.textContent = `Processing ${operatingMode()} receipt... (${processAsPercentage}%)`
+            }
         }
     }
 
