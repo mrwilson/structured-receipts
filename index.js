@@ -1,5 +1,20 @@
 const StructuredReceipts = new function() {
 
+    function addRowToReceiptTable(quantity, product, price) {
+        var newRow = receipt.insertRow();
+        var quantityCell = newRow.insertCell()
+        quantityCell.textContent = quantity;
+        quantityCell.setAttribute('contenteditable','true');
+
+        var productCell = newRow.insertCell()
+        productCell.textContent = product;
+        productCell.setAttribute('contenteditable','true');
+
+        var priceCell = newRow.insertCell()
+        priceCell.textContent = price;
+        priceCell.setAttribute('contenteditable','true');
+    }
+
     this.logReceiptProcessing = function logReceiptProcessing(m) {
 
         if (m.status === 'recognizing text') {
@@ -30,18 +45,7 @@ const StructuredReceipts = new function() {
 
                     var price = fields.slice(-1)[0].replace("£","");
 
-                    var newRow = receipt.insertRow();
-                    var quantityCell = newRow.insertCell()
-                    quantityCell.textContent = 1;
-                    quantityCell.setAttribute('contenteditable','true');
-
-                    var productCell = newRow.insertCell()
-                    productCell.textContent = product;
-                    productCell.setAttribute('contenteditable','true');
-
-                    var priceCell = newRow.insertCell()
-                    priceCell.textContent = price;
-                    priceCell.setAttribute('contenteditable','true');
+                    addRowToReceiptTable(1, product, price);
                 });
 
                 receipt.style.visibility = 'visible';
