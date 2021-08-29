@@ -3,6 +3,7 @@ body {
     width: auto;
     height: 100vh;
     font-family: Arial;
+    text-align: center;
 }
 
 @media only screen and (min-width: 1025px) {
