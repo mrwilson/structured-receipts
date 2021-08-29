@@ -17,7 +17,7 @@ const StructuredReceipts = new function() {
                 line => line.match(/\d+ BALANCE/)
             );
 
-            return receiptLines
+            receiptLines
                 .slice(0, balanceLine)
                 .filter(line => line.includes("£"))
                 .forEach(line => {
@@ -31,13 +31,20 @@ const StructuredReceipts = new function() {
                     var price = fields.slice(-1)[0].replace("£","");
 
                     var newRow = receipt.insertRow();
-                    newRow.insertCell().textContent = 1;
-                    newRow.insertCell().textContent = product;
-                    newRow.insertCell().textContent = price;
+                    var quantityCell = newRow.insertCell()
+                    quantityCell.textContent = 1;
+                    quantityCell.setAttribute('contenteditable','true');
+
+                    var productCell = newRow.insertCell()
+                    productCell.textContent = product;
+                    productCell.setAttribute('contenteditable','true');
+
+                    var priceCell = newRow.insertCell()
+                    priceCell.textContent = price;
+                    priceCell.setAttribute('contenteditable','true');
                 });
 
                 receipt.style.visibility = 'visible';
-
                 download_csv.style.visibility = 'visible';
         } else {
             failed_parse_receipt.value = content;
