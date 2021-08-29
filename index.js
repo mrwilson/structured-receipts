@@ -5,6 +5,11 @@ const StructuredReceipts = new function() {
         var quantityCell = newRow.insertCell()
         quantityCell.textContent = quantity;
         quantityCell.setAttribute('contenteditable','true');
+        quantityCell.addEventListener('input', e => {
+            if (e.data == 0) {
+                receipt.deleteRow(newRow.rowIndex);
+            }
+        })
 
         var productCell = newRow.insertCell()
         productCell.textContent = product;
@@ -19,7 +24,6 @@ const StructuredReceipts = new function() {
 
         if (m.status === 'recognizing text') {
             var processAsPercentage = Math.floor(m.progress*100);
-
             processing.textContent = `Processing receipt... (${processAsPercentage}%)`
         }
     }
