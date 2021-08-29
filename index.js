@@ -35,9 +35,16 @@ const StructuredReceipts = new function() {
                     newRow.insertCell().textContent = product;
                     newRow.insertCell().textContent = price;
                 });
+
+                receipt.style.visibility = 'visible';
+
+                download_csv.style.visibility = 'visible';
+        } else {
+            failed_parse_receipt.value = content;
+            failed_parse_receipt.style.height = failed_parse_receipt.scrollHeight+"px"
+            failed_parse_receipt.style.visibility = 'visible';
         }
 
-        return content
     }
 
     this.downloadAsCsv = function downloadAsCsv() {
@@ -103,9 +110,7 @@ const StructuredReceipts = new function() {
                         processing.style.visibility = 'hidden';
 
                         StructuredReceipts.mungeReceipt(text);
-                        receipt.style.visibility = 'visible';
 
-                        download_csv.style.visibility = 'visible';
                     });
             }
             image.src = reader.result;
