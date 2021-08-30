@@ -67,7 +67,7 @@ const StructuredReceipts = new function() {
     }
 
     this.mungeReceipt = function mungeReceipt(content) {
-        if (content.includes("Sainsbury's") || operatingMode() == "sainsbury's") {
+        if (operatingMode() == "sainsbury's") {
             getItemsOnlyFromReceipt(
                 content,
                 line => line.match(/\d+ BALANCE/),
@@ -76,10 +76,7 @@ const StructuredReceipts = new function() {
             .forEach(validLine =>
                 addRowToReceiptTable(validLine[0], validLine[1], validLine[2])
             );
-
-            receipt.style.visibility = 'visible';
-            download_csv.style.visibility = 'visible';
-        } else if (content.toLowerCase().includes("total to pay") || operatingMode() == "tesco") {
+        } else if (operatingMode() == "tesco") {
             getItemsOnlyFromReceipt(
                 content,
                 line => line.match(/total to pay/i),
@@ -88,10 +85,7 @@ const StructuredReceipts = new function() {
             .forEach(validLine =>
                 addRowToReceiptTable(validLine[0], validLine[1], validLine[2])
             );
-
-            receipt.style.visibility = 'visible';
-            download_csv.style.visibility = 'visible';
-        } else if (content.toLowerCase().includes("asda") || operatingMode() == "asda") {
+        } else if (operatingMode() == "asda") {
             getItemsOnlyFromReceipt(
               content,
               line => line.match(/total.*.*\d+\.\d{2}/i),
@@ -106,15 +100,20 @@ const StructuredReceipts = new function() {
             .forEach(validLine =>
               addRowToReceiptTable(validLine[0], validLine[1], validLine[2])
             );
-
-            receipt.style.visibility = 'visible';
-            download_csv.style.visibility = 'visible';
         } else {
-            failed_parse_receipt.value = content;
-            failed_parse_receipt.style.height = failed_parse_receipt.scrollHeight+"px"
-            failed_parse_receipt.style.visibility = 'visible';
+            getItemsOnlyFromReceipt(
+              content,
+              // Don't attempt to find the total row as the type of receipt is unknown
+              line => false,
+              line => line.match(/.*\d+\.\d{2}/) != null
+            )
+            .forEach(validLine =>
+              addRowToReceiptTable(validLine[0], validLine[1], validLine[2])
+            );
         }
 
+        receipt.style.visibility = 'visible';
+        download_csv.style.visibility = 'visible';
     }
 
     this.downloadAsCsv = function downloadAsCsv() {
