@@ -58,10 +58,6 @@ header i {
     cursor: pointer;
 }
 
-textarea {
-    resize: none;
-}
-
 td {
   text-align: center;
 }
