@@ -34,6 +34,11 @@ header {
     grid-template-columns: 1fr 2fr 1fr;
 }
 
+header .box {
+    grid-column-start: 2;
+    grid-column-end: 2;
+}
+
 header h1 {
     font-size: 25pt
 }
