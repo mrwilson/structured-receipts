@@ -91,6 +91,24 @@ const StructuredReceipts = new function() {
 
             receipt.style.visibility = 'visible';
             download_csv.style.visibility = 'visible';
+        } else if (content.toLowerCase().includes("asda") || operatingMode() == "asda") {
+            getItemsOnlyFromReceipt(
+              content,
+              line => line.match(/total.*.*\d+\.\d{2}/i),
+              line => line.match(/.*\d+\.\d{2}/) != null
+            )
+            .map(line => {
+                // Remove trailing characters from price column
+                var cleanPrice = line[2].replace(/(\d+\.\d{2}).*/, (match, group) => group);
+
+                return [line[0], line[1], cleanPrice];
+            })
+            .forEach(validLine =>
+              addRowToReceiptTable(validLine[0], validLine[1], validLine[2])
+            );
+
+            receipt.style.visibility = 'visible';
+            download_csv.style.visibility = 'visible';
         } else {
             failed_parse_receipt.value = content;
             failed_parse_receipt.style.height = failed_parse_receipt.scrollHeight+"px"
